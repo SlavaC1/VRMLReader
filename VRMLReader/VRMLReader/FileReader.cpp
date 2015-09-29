@@ -1,26 +1,27 @@
 #include "FileReader.h"
-#include <boost/iostreams/device/mapped_file.hpp> 
 
-EFileReader::EFileReader(const std::string &Error) 
+CFileReader::CFileReader(const std::string &Path) : m_Data(nullptr), m_FileSize(0)
 {
+	m_File.open(Path);
 
+	if (m_File.is_open())	
+		m_Data = m_File.data();	
+	else	
+		throw EFileReader("Can't open file");		
 }
 
-CFileReader::CFileReader(const std::string &Path)
+CFileReader::~CFileReader()
 {
-	boost::iostreams::mapped_file file;
+	if (m_File.is_open())
+		m_File.close();
+}
 
-	file.open(Path);
+const char* CFileReader::GetData() const
+{
+	return m_Data;
+}
 
-	if(file.is_open())
-	{
-		char *data = file.data();
-		file.close();
-	}
-	else
-	{
-		throw EFileReader("Can't open file");
-
-	}
-	
+const size_t CFileReader::GetFileSize() const
+{
+	return m_File.size();
 }

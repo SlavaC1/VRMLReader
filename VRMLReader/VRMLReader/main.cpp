@@ -11,11 +11,14 @@ int main(int argc, char* argv[])
 
 		auto duration = boost::chrono::duration_cast<boost::chrono::milliseconds>(end - start).count();
 
+		const char*  data = fileReader.GetData();
+		const size_t size = fileReader.GetFileSize();
+
 		int i = 7;
 	}
 	catch (EFileReader &e)
 	{
-		e.what();
+		std::string err = e.what();
 	}
 
 	return 0;
