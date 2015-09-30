@@ -1,18 +1,24 @@
-#include "FileReader.h"
 #include <boost\chrono.hpp>
+#include "FileReader.h"
+#include "VRMLParser.h"
 
 int main(int argc, char* argv[])
 {
 	try
 	{
-		auto start = boost::chrono::high_resolution_clock::now();
-		CFileReader fileReader(std::string("c:\\test\\1.txt"));
-		auto end = boost::chrono::high_resolution_clock::now();
+		namespace ch = boost::chrono;
 
-		auto duration = boost::chrono::duration_cast<boost::chrono::milliseconds>(end - start).count();
+		auto start = ch::high_resolution_clock::now();
+		CFileReader fileReader(std::string("c:\\test\\test.txt"));
+		auto end = ch::high_resolution_clock::now();
+
+		auto duration = ch::duration_cast<boost::chrono::milliseconds>(end - start).count();
 
 		const char*  data = fileReader.GetData();
 		const size_t size = fileReader.GetFileSize();
+
+		CVRMLParser par;
+		par.Parse(data);
 
 		int i = 7;
 	}
