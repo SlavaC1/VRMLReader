@@ -1,7 +1,12 @@
-#include "VRMLParser.h"
 
+//#define BOOST_SPIRIT_DEBUG
+
+#include "VRMLParser.h"
+#include <boost\chrono.hpp>
 #include <boost\spirit\include\qi.hpp>
 #include <boost\fusion\include\adapt_struct.hpp>
+#include <boost\spirit\repository\include\qi_seek.hpp>
+#include <boost\spirit\include\qi_repeat.hpp>
 
 CVRMLParser::CVRMLParser()
 {
@@ -32,17 +37,22 @@ BOOST_FUSION_ADAPT_STRUCT
 	(int, c)	
 )
 
-namespace qi = boost::spirit::qi;
+namespace qi   = boost::spirit::qi;
+namespace repo = boost::spirit::repository;
 
 template <typename Iterator>
-struct CoordIndexParser : boost::spirit::qi::grammar<Iterator, CoordIndex(), qi::space_type>
+struct CoordIndexParser : boost::spirit::qi::grammar<Iterator, std::vector<CoordIndex>(), qi::space_type>
 {
 	CoordIndexParser() : CoordIndexParser::base_type(start)
 	{
-		start %= qi::lit("coordIndex") >> '[' >> qi::int_ >> qi::int_ >> qi::int_ >> qi::lit("-1");
+		singleIndex  = qi::int_ >> qi::int_ >> qi::int_ >> qi::lit("-1");
+		start       %= repo::seek[qi::lexeme[qi::skip[qi::lit("coordIndex") >> '[' >> qi::repeat[singleIndex]]]];
+
+		//BOOST_SPIRIT_DEBUG_NODES((singleIndex)(start));
 	}
 
-	qi::rule<Iterator, CoordIndex(), qi::space_type> start;
+	qi::rule<Iterator, CoordIndex(), qi::space_type>              singleIndex;
+	qi::rule<Iterator, std::vector<CoordIndex>(), qi::space_type> start;	
 };
 
 
@@ -51,7 +61,24 @@ struct CoordIndexParser : boost::spirit::qi::grammar<Iterator, CoordIndex(), qi:
 void CVRMLParser::Parse(const std::string &Data)
 {
 	namespace qi = boost::spirit::qi;
+	namespace ch = boost::chrono;
 
+	CoordIndex coord;
+	std::vector<CoordIndex> vec;
+
+	typedef CoordIndexParser<std::string::const_iterator> indexParser;
+
+	indexParser g;
+
+	auto start = ch::high_resolution_clock::now();
+	bool r = phrase_parse(Data.begin(), Data.end(), g, qi::space, vec);
+	auto end = ch::high_resolution_clock::now();
+
+	auto duration = ch::duration_cast<boost::chrono::milliseconds>(end - start).count();
+
+	int i = 2;
+
+	
 	/*
 	// Parses doubles into vector
 	std::vector<double> value;
@@ -90,16 +117,6 @@ void CVRMLParser::Parse(const std::string &Data)
 
 
 	
-	CoordIndex coord;
-
-	typedef std::string::const_iterator iterator_type;
-	typedef CoordIndexParser<iterator_type> indexParser;
-
-	indexParser g; 
-
-	std::string::const_iterator iter = Data.begin();
-	std::string::const_iterator end = Data.end();
-
-	bool r = phrase_parse(iter, end, g, qi::space, coord);
+	
 
 }
