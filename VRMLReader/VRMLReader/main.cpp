@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 		namespace ch = boost::chrono;
 
 		auto start = ch::high_resolution_clock::now();
-		CFileReader fileReader(std::string("c:\\test\\2.wrl"));
+		CFileReader fileReader(std::string("C:\\GIT\\VRMLReader\\1.wrl"));
 		auto end = ch::high_resolution_clock::now();
 
 		auto duration = ch::duration_cast<boost::chrono::milliseconds>(end - start).count();

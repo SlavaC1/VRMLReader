@@ -61,21 +61,17 @@ struct PointParser : boost::spirit::qi::grammar<Iterator, std::vector<Point>(), 
 {
 	PointParser() : PointParser::base_type(start, "PointGrammar")
 	{
-		singlePoint = qi::double_ >> qi::double_ >> qi::double_ >> qi::lit(",");
+		singlePoint = qi::double_ >> qi::double_ >> qi::double_ >> *qi::lit(",");
 		comment     = qi::lit("#") >> *(qi::char_ - qi::eol);
-		prefix      = repo::seek[qi::lexeme[qi::skip[qi::lit("point") >> qi::lit("[") >> comment]]];
-		start      %= prefix >> qi::repeat[singlePoint];
+		prefix      = repo::seek[qi::lexeme[qi::skip[qi::lit("point") >> qi::lit("[") >> *comment]]];
+		start      %= prefix >> qi::repeat[singlePoint];		
 
-		singlePoint.name("SinglePointRule");
-		comment.name("CommentRule");
-		start.name("StartRule");
-
-		BOOST_SPIRIT_DEBUG_NODES((singlePoint));
+		//BOOST_SPIRIT_DEBUG_NODES((prefix)(comment)(singlePoint)(start));
 	}
 
 	qi::rule<Iterator, Point(), qi::space_type>              singlePoint;
-	qi::rule<Iterator, std::string(), qi::space_type>        comment;
-	qi::rule<Iterator, std::string(), qi::space_type>        prefix;
+	qi::rule<Iterator, qi::space_type>                       comment;
+	qi::rule<Iterator, qi::space_type>                       prefix;
 	qi::rule<Iterator, std::vector<Point>(), qi::space_type> start;
 };
 
@@ -84,11 +80,8 @@ struct CoordIndexParser : boost::spirit::qi::grammar<Iterator, std::vector<Coord
 {
 	CoordIndexParser() : CoordIndexParser::base_type(start, "CoordIndexGrammar")
 	{
-		singleIndex  = qi::int_ >> qi::int_ >> qi::int_ >> qi::lit("-1");
-		start       %= repo::seek[qi::lexeme[qi::skip[qi::lit("coordIndex") >> qi::lit("[") >> qi::repeat[singleIndex]]]];
-
-		singleIndex.name("SingleIndexRule");
-		start.name("StartRule");
+		singleIndex  = qi::int_ >> qi::int_ >> qi::int_ >> qi::lit("-1") >> *qi::lit(",");
+		start       %= repo::seek[qi::lexeme[qi::skip[qi::lit("coordIndex") >> qi::lit("[") >> qi::repeat[singleIndex]]]];		
 
 		//BOOST_SPIRIT_DEBUG_NODES((singleIndex)(start));
 	}
@@ -116,8 +109,8 @@ void CVRMLParser::Parse(const std::string &Data)
 	typedef PointParser<std::string::const_iterator> pointParser;	
 	pointParser g2;
 
-	auto start = ch::high_resolution_clock::now();
-	bool r = phrase_parse(Data.begin(), Data.end(), g2, qi::space, points);
+	auto start = ch::high_resolution_clock::now();	
+	bool r = phrase_parse(Data.begin(), Data.end(), g2, qi::space, points);	
 	auto end = ch::high_resolution_clock::now();
 
 	auto duration = ch::duration_cast<boost::chrono::milliseconds>(end - start).count();
