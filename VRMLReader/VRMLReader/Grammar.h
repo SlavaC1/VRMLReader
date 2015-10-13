@@ -1,35 +1,12 @@
 #pragma once
 
+#include "Types.h"
 #include <boost\spirit\include\qi.hpp>	
 
 namespace VRMLDoc
 {
-	struct TPoint
-	{
-		double x;
-		double y;
-		double z;
-
-		TPoint() : x(0.0), y(0.0), z(0.0){}
-	};
-
-	struct TCoordIndex
-	{
-		int x;
-		int y;
-		int z;
-
-		TCoordIndex() : x(0), y(0), z(0){}
-	};
-
 	using namespace boost::spirit::qi;
-	using namespace std;
-
-	struct TModel
-	{
-		vector<TPoint>      points;
-		vector<TCoordIndex> indexes;
-	};
+	using namespace std;	
 
 	class CPointGrammar : public grammar<string::const_iterator, std::vector<TPoint>(), space_type>
 	{

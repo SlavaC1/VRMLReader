@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 		namespace ch = boost::chrono;
 
 		auto start = ch::high_resolution_clock::now();
-		CFileReader fileReader(std::string("C:\\GIT\\VRMLReader\\wolf.wrl"));		
+		CFileReader fileReader(std::string("C:\\GIT\\VRMLReader\\1.wrl"));		
 
 		const char*  data = fileReader.GetData();
 		const size_t size = fileReader.GetFileSize();
@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	}
 	catch (EFileReader &e)
 	{
-		std::string err = e.what();
+		std::cout << e.what() << std::endl;
 	}
 
 	return 0;

@@ -1,18 +1,13 @@
 #include "Grammar.h"
 
-#include <boost\fusion\include\adapt_struct.hpp>
 #include <boost\spirit\repository\include\qi_seek.hpp>
 #include <boost\spirit\include\qi_repeat.hpp>
-
-BOOST_FUSION_ADAPT_STRUCT(VRMLDoc::TPoint,(double, x)(double, y)(double, z))
-BOOST_FUSION_ADAPT_STRUCT(VRMLDoc::TCoordIndex,(int, x)(int, y)(int, x))
-BOOST_FUSION_ADAPT_STRUCT(VRMLDoc::TModel,(std::vector<VRMLDoc::TPoint>, points)(std::vector<VRMLDoc::TCoordIndex>, indexes))
 
 namespace VRMLDoc
 {
 	using namespace boost::spirit::repository;
 
-	CPointGrammar::CPointGrammar() : CPointGrammar::base_type(m_StartRule, "PointGrammar")
+	CPointGrammar::CPointGrammar() : base_type(m_StartRule, "PointGrammar")
 	{
 		m_SinglePointRule = double_ >> double_ >> double_ >> *lit(",");
 		m_PrefixRule      = seek[lit("point") >> "[" >> *m_CommentRule];
