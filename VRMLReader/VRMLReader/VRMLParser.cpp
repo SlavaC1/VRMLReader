@@ -16,7 +16,8 @@ CVRMLParser::~CVRMLParser()
 
 void CVRMLParser::Parse(const std::string &Data)
 {	
-	namespace ch = boost::chrono;	
+	namespace ch = boost::chrono;
+	using namespace VRMLDoc;
 	
 	std::vector<TCoordIndex> indexes;	
 	CCoordIndexGrammar g;	
