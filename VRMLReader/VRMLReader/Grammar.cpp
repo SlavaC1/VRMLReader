@@ -12,7 +12,7 @@ namespace VRMLDoc
 	CPointGrammar::CPointGrammar() : base_type(m_StartRule, "PointGrammar")
 	{
 		m_SinglePointRule = double_ >> double_ >> double_ >> *lit(",");
-		m_PrefixRule      = seek[lit("point") >> "[" >> *m_CommentRule];
+		m_PrefixRule      = seek[lit("point")] >> "[" >> *m_CommentRule;
 		m_CommentRule     = "#" >> *(ascii::char_ - eol);
 		m_StartRule      %= m_PrefixRule >> *m_SinglePointRule >> "]";
 
@@ -22,15 +22,16 @@ namespace VRMLDoc
 	CCoordIndexGrammar::CCoordIndexGrammar() : base_type(m_StartRule, "CoordIndexGrammar")
 	{
 		m_SingleIndexRule = int_ >> *lit(",") >> int_ >> *lit(",") >> int_ >> *lit(",") >> lit("-1") >> *lit(",");
-		m_PrefixRule      = seek[lit("coordIndex") >> "[" >> *m_CommentRule];
+		m_PrefixRule      = seek[lit("coordIndex")] >> "[" >> *m_CommentRule;
 		m_CommentRule     = "#" >> *(ascii::char_ - eol);
 		m_StartRule      %= m_PrefixRule >> *m_SingleIndexRule >> "]";		
 	}
 
 	CGeometryGrammar::CGeometryGrammar() : base_type(m_StartRule, "GeometryGrammar")
 	{
-		m_PrefixRule = seek[lit("geometry") >> lit("IndexedFaceSet") >> "{"];
-		m_StartRule %= m_PrefixRule >> m_PointGrammar >> m_CoordIndexGrammar >> "}";
+		m_GeometryTypeRule = +(char_ - "{");
+		m_PrefixRule       = seek[lit("geometry")]; 
+		m_StartRule       %= m_PrefixRule >> m_GeometryTypeRule >> "{" >> m_PointGrammar >> m_CoordIndexGrammar >> "}";		
 	}
 }
 

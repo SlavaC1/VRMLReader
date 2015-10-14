@@ -25,7 +25,7 @@ void CVRMLParser::Parse(const std::string &Data)
 	std::vector<TPoint> points;	
 	CPointGrammar g2;
 
-	TModel VRML;	
+	TGeometry VRML;
 	CGeometryGrammar g3;
 
 	auto start = ch::high_resolution_clock::now();	
@@ -38,6 +38,7 @@ void CVRMLParser::Parse(const std::string &Data)
 	//std::cout << "Parsed indexes: " << indexes.size() << std::endl;
 	
 	std::cout << "Parsed indexes: " << VRML.indexes.size() << std::endl << "Parsed points:  " << VRML.points.size() << std::endl;
+	std::cout << "Geometry type: " << VRML.geometryType << std::endl;
 
 	
 

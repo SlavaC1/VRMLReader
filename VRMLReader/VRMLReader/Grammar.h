@@ -33,13 +33,14 @@ namespace VRMLDoc
 		CCoordIndexGrammar();
 	};
 
-	class CGeometryGrammar : public grammar<string::const_iterator, TModel(), space_type>
+	class CGeometryGrammar : public grammar<string::const_iterator, TGeometry(), space_type>
 	{
 	private:
-		CPointGrammar                                      m_PointGrammar;
-		CCoordIndexGrammar                                 m_CoordIndexGrammar;
-		rule<string::const_iterator, space_type>           m_PrefixRule;
-		rule<string::const_iterator, TModel(), space_type> m_StartRule;
+		CPointGrammar                                           m_PointGrammar;
+		CCoordIndexGrammar                                      m_CoordIndexGrammar;
+		rule<string::const_iterator, space_type>                m_PrefixRule;
+		rule<string::const_iterator, std::string(), space_type> m_GeometryTypeRule;
+		rule<string::const_iterator, TGeometry(), space_type>   m_StartRule;
 
 	public:
 		CGeometryGrammar();

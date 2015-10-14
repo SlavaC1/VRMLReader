@@ -7,6 +7,19 @@ namespace VRMLDoc
 {
 	using namespace std;
 
+	enum class TGeometryType
+	{
+		geoBox,
+		geoCone,
+		geoCylinder,
+		geoElevationGrid,
+		geoExtrusion,
+		geoIndexedFaceSet,
+		geoIndexedLineSet,
+		geoPointSet,
+		geoSphere,
+	};
+
 	struct TPoint
 	{
 		double x;
@@ -25,8 +38,9 @@ namespace VRMLDoc
 		TCoordIndex() : x(0), y(0), z(0) {}
 	};
 
-	struct TModel
+	struct TGeometry
 	{
+		std::string         geometryType;
 		vector<TPoint>      points;
 		vector<TCoordIndex> indexes;
 	};	
@@ -34,4 +48,4 @@ namespace VRMLDoc
 
 BOOST_FUSION_ADAPT_STRUCT(VRMLDoc::TPoint, x, y, z)
 BOOST_FUSION_ADAPT_STRUCT(VRMLDoc::TCoordIndex, x, y, z)
-BOOST_FUSION_ADAPT_STRUCT(VRMLDoc::TModel, points, indexes)
+BOOST_FUSION_ADAPT_STRUCT(VRMLDoc::TGeometry, geometryType, points, indexes)
