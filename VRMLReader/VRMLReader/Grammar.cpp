@@ -1,5 +1,7 @@
-#include "Grammar.h"
 
+#define BOOST_SPIRIT_DEBUG
+
+#include "Grammar.h"
 #include <boost\spirit\repository\include\qi_seek.hpp>
 #include <boost\spirit\include\qi_repeat.hpp>
 
@@ -22,14 +24,13 @@ namespace VRMLDoc
 		m_SingleIndexRule = int_ >> *lit(",") >> int_ >> *lit(",") >> int_ >> *lit(",") >> lit("-1") >> *lit(",");
 		m_PrefixRule      = seek[lit("coordIndex") >> "[" >> *m_CommentRule];
 		m_CommentRule     = "#" >> *(ascii::char_ - eol);
-		m_StartRule      %= m_PrefixRule >> *m_SingleIndexRule >> "]";
-
-		//BOOST_SPIRIT_DEBUG_NODES((m_StartRule)(m_PrefixRule)(singleIndexm_SingleIndexRule));
+		m_StartRule      %= m_PrefixRule >> *m_SingleIndexRule >> "]";		
 	}
 
-	CModelGrammar::CModelGrammar() : base_type(m_StartRule, "ModelGrammar")
+	CGeometryGrammar::CGeometryGrammar() : base_type(m_StartRule, "GeometryGrammar")
 	{
-		m_StartRule %= m_PointGrammar >> m_CoordIndexGrammar;
+		m_PrefixRule = seek[lit("geometry") >> lit("IndexedFaceSet") >> "{"];
+		m_StartRule %= m_PrefixRule >> m_PointGrammar >> m_CoordIndexGrammar >> "}";
 	}
 }
 

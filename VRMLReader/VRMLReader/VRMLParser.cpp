@@ -26,7 +26,7 @@ void CVRMLParser::Parse(const std::string &Data)
 	CPointGrammar g2;
 
 	TModel VRML;	
-	CModelGrammar g3;
+	CGeometryGrammar g3;
 
 	auto start = ch::high_resolution_clock::now();	
 	bool r = phrase_parse(Data.begin(), Data.end(), g3, space, VRML);	
